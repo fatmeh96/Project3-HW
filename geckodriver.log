@@ -18456,3 +18456,28 @@ WebDriver BiDi listening on ws://127.0.0.1:56438
 1678823596774	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
 console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\admin3\\AppData\\Local\\Temp\\rust_mozprofile0JIfvp\\search.json.mozlz4", (void 0)))
 DevTools listening on ws://127.0.0.1:56438/devtools/browser/edb4f7a2-55a2-4f89-b240-7abc8b8d458e
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+[GFX1-]: GFX: RenderThread detected a device reset in PostUpdate
+[GFX1]: Crash during D3D11 device creation
+[GFX1-]: RcANGLE(no compositor device for EGLDisplay)(Create)
+[GFX1-]: Failed to connect WebRenderBridgeChild. isParent=true
+[GFX1-]: Fallback WR to SW-WR
+[GFX1-]: Failed to create remote compositor
+[GFX1-][GFX:1-] Receive IPC cl[GFo[:Xse with reason=1GFX- Receive IPC close A1bwitn]ormalSh rh-ue: R]tae:dsc oeive IPCRon=AbnormalShutdown closewn wie
+
+th ceive IPC reasonclose=AbnormalShu witdownth reason=A
+bnormalShutdown
+[Parent 24500, Main Thread] WARNING: base::KillProcess refusing to terminate process handle 0: file /builds/worker/checkouts/gecko/ipc/chromium/src/base/process_util_win.cc:347
+[GFX1-]: Failed as lost WebRenderBridgeChild.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+[GFX1-]: Failed as lost WebRenderBridgeChild.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchSyncMessage] Error: PCompositorBridge::Msg_NotifyChildRecreated Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchSyncMessage] Error: PCompositorBridge::Msg_NotifyChildRecreated Processing error: message was deserialized, but the handler returned false (indicating failure)
+
