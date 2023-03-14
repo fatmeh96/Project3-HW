@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>project3_report.html</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    let visibleString = getQueryParameter('visible') || 'all';
+    visibleString = visibleString.toLowerCase();
+    const checkedItems = visibleString.split(',');
+
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++) {
+        filterItems[i].hidden = false;
+
+        if (visibleString != 'all') {
+            filterItems[i].checked = checkedItems.includes(filterItems[i].getAttribute('data-test-result'));
+            filterTable(filterItems[i]);
+        }
+    }
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>project3_report.html</h1>
+    <p>Report generated on 14-Mar-2023 at 21:53:28 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "1.0.0", "pytest": "7.2.1"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Windows-10-10.0.19044-SP0</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"html": "3.2.0", "metadata": "2.0.4", "repeat": "0.9.1"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.11.0</td></tr></table>
+    <h2>Summary</h2>
+    <p>66 tests ran in 121.02 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">64 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">2 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_response_of_site[chrome]</td>
+          <td class="col-duration">0.76</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;test_smoke.TestSmoke object at 0x000002020F4C5A90&gt;, setup = &lt;selenium.webdriver.chrome.webdriver.WebDriver (session=&quot;d5b87d63c978ce3989f6b52ae3bc8203&quot;)&gt;<br/><br/>    def test_response_of_site(self, setup):<br/>        #try to check some page in the web<br/>        setup.get(&quot;http://127.0.0.1:8080/show_site/1&quot;)<br/>        wait = WebDriverWait(setup, 10)<br/>        body = wait.until(EC.visibility_of_element_located((By.TAG_NAME, &#x27;body&#x27;)))<br/>        #if the body is not displayed : throw an error (normal size)<br/>        assert body.is_displayed(), self.getLogger().error(f&quot;Can&#x27;t display size in {setup.name.lstrip(&#x27;ms&#x27;)}&quot;)<br/>        #set new size and scroll to the top to find the body element<br/>&gt;       setup.set_window_size(640, 480)<br/><br/>test_smoke.py:58: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>..\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:953: in set_window_size<br/>    self.set_window_rect(width=int(width), height=int(height))<br/>..\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:1032: in set_window_rect<br/>    return self.execute(Command.SET_WINDOW_RECT, {&quot;x&quot;: x, &quot;y&quot;: y, &quot;width&quot;: width, &quot;height&quot;: height})[&quot;value&quot;]<br/>..\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:440: in execute<br/>    self.error_handler.check_response(response)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002020F443250&gt;<br/>response = {&#x27;status&#x27;: 500, &#x27;value&#x27;: &#x27;{&quot;value&quot;:{&quot;error&quot;:&quot;unknown error&quot;,&quot;message&quot;:&quot;unknown error: failed to change window state to...\n\\tRtlGetAppContainerNamedObjectPath [0x77E87BBE+286]\\n\\tRtlGetAppContainerNamedObjectPath [0x77E87B8E+238]\\n&quot;}}&#x27;}<br/><br/>    def check_response(self, response: Dict[str, Any]) -&gt; None:<br/>        &quot;&quot;&quot;Checks that a JSON response from the WebDriver does not have an<br/>        error.<br/>    <br/>        :Args:<br/>         - response - The JSON response from the WebDriver server as a dictionary<br/>           object.<br/>    <br/>        :Raises: If the response contains an error message.<br/>        &quot;&quot;&quot;<br/>        status = response.get(&quot;status&quot;, None)<br/>        if not status or status == ErrorCode.SUCCESS:<br/>            return<br/>        value = None<br/>        message = response.get(&quot;message&quot;, &quot;&quot;)<br/>        screen: str = response.get(&quot;screen&quot;, &quot;&quot;)<br/>        stacktrace = None<br/>        if isinstance(status, int):<br/>            value_json = response.get(&quot;value&quot;, None)<br/>            if value_json and isinstance(value_json, str):<br/>                import json<br/>    <br/>                try:<br/>                    value = json.loads(value_json)<br/>                    if len(value.keys()) == 1:<br/>                        value = value[&quot;value&quot;]<br/>                    status = value.get(&quot;error&quot;, None)<br/>                    if not status:<br/>                        status = value.get(&quot;status&quot;, ErrorCode.UNKNOWN_ERROR)<br/>                        message = value.get(&quot;value&quot;) or value.get(&quot;message&quot;)<br/>                        if not isinstance(message, str):<br/>                            value = message<br/>                            message = message.get(&quot;message&quot;)<br/>                    else:<br/>                        message = value.get(&quot;message&quot;, None)<br/>                except ValueError:<br/>                    pass<br/>    <br/>        exception_class: Type[WebDriverException]<br/>        if status in ErrorCode.NO_SUCH_ELEMENT:<br/>            exception_class = NoSuchElementException<br/>        elif status in ErrorCode.NO_SUCH_FRAME:<br/>            exception_class = NoSuchFrameException<br/>        elif status in ErrorCode.NO_SUCH_SHADOW_ROOT:<br/>            exception_class = NoSuchShadowRootException<br/>        elif status in ErrorCode.NO_SUCH_WINDOW:<br/>            exception_class = NoSuchWindowException<br/>        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:<br/>            exception_class = StaleElementReferenceException<br/>        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:<br/>            exception_class = ElementNotVisibleException<br/>        elif status in ErrorCode.INVALID_ELEMENT_STATE:<br/>            exception_class = InvalidElementStateException<br/>        elif (<br/>            status in ErrorCode.INVALID_SELECTOR<br/>            or status in ErrorCode.INVALID_XPATH_SELECTOR<br/>            or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER<br/>        ):<br/>            exception_class = InvalidSelectorException<br/>        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:<br/>            exception_class = ElementNotSelectableException<br/>        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:<br/>            exception_class = ElementNotInteractableException<br/>        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:<br/>            exception_class = InvalidCookieDomainException<br/>        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:<br/>            exception_class = UnableToSetCookieException<br/>        elif status in ErrorCode.TIMEOUT:<br/>            exception_class = TimeoutException<br/>        elif status in ErrorCode.SCRIPT_TIMEOUT:<br/>            exception_class = TimeoutException<br/>        elif status in ErrorCode.UNKNOWN_ERROR:<br/>            exception_class = WebDriverException<br/>        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:<br/>            exception_class = UnexpectedAlertPresentException<br/>        elif status in ErrorCode.NO_ALERT_OPEN:<br/>            exception_class = NoAlertPresentException<br/>        elif status in ErrorCode.IME_NOT_AVAILABLE:<br/>            exception_class = ImeNotAvailableException<br/>        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:<br/>            exception_class = ImeActivationFailedException<br/>        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:<br/>            exception_class = MoveTargetOutOfBoundsException<br/>        elif status in ErrorCode.JAVASCRIPT_ERROR:<br/>            exception_class = JavascriptException<br/>        elif status in ErrorCode.SESSION_NOT_CREATED:<br/>            exception_class = SessionNotCreatedException<br/>        elif status in ErrorCode.INVALID_ARGUMENT:<br/>            exception_class = InvalidArgumentException<br/>        elif status in ErrorCode.NO_SUCH_COOKIE:<br/>            exception_class = NoSuchCookieException<br/>        elif status in ErrorCode.UNABLE_TO_CAPTURE_SCREEN:<br/>            exception_class = ScreenshotException<br/>        elif status in ErrorCode.ELEMENT_CLICK_INTERCEPTED:<br/>            exception_class = ElementClickInterceptedException<br/>        elif status in ErrorCode.INSECURE_CERTIFICATE:<br/>            exception_class = InsecureCertificateException<br/>        elif status in ErrorCode.INVALID_COORDINATES:<br/>            exception_class = InvalidCoordinatesException<br/>        elif status in ErrorCode.INVALID_SESSION_ID:<br/>            exception_class = InvalidSessionIdException<br/>        elif status in ErrorCode.UNKNOWN_METHOD:<br/>            exception_class = UnknownMethodException<br/>        else:<br/>            exception_class = WebDriverException<br/>        if not value:<br/>            value = response[&quot;value&quot;]<br/>        if isinstance(value, str):<br/>            raise exception_class(value)<br/>        if message == &quot;&quot; and &quot;message&quot; in value:<br/>            message = value[&quot;message&quot;]<br/>    <br/>        screen = None  # type: ignore[assignment]<br/>        if &quot;screen&quot; in value:<br/>            screen = value[&quot;screen&quot;]<br/>    <br/>        stacktrace = None<br/>        st_value = value.get(&quot;stackTrace&quot;) or value.get(&quot;stacktrace&quot;)<br/>        if st_value:<br/>            if isinstance(st_value, str):<br/>                stacktrace = st_value.split(&quot;\n&quot;)<br/>            else:<br/>                stacktrace = []<br/>                try:<br/>                    for frame in st_value:<br/>                        line = frame.get(&quot;lineNumber&quot;, &quot;&quot;)<br/>                        file = frame.get(&quot;fileName&quot;, &quot;&lt;anonymous&gt;&quot;)<br/>                        if line:<br/>                            file = f&quot;{file}:{line}&quot;<br/>                        meth = frame.get(&quot;methodName&quot;, &quot;&lt;anonymous&gt;&quot;)<br/>                        if &quot;className&quot; in frame:<br/>                            meth = f&quot;{frame[&#x27;className&#x27;]}.{meth}&quot;<br/>                        msg = &quot;    at %s (%s)&quot;<br/>                        msg = msg % (meth, file)<br/>                        stacktrace.append(msg)<br/>                except TypeError:<br/>                    pass<br/>        if exception_class == UnexpectedAlertPresentException:<br/>            alert_text = None<br/>            if &quot;data&quot; in value:<br/>                alert_text = value[&quot;data&quot;].get(&quot;text&quot;)<br/>            elif &quot;alert&quot; in value:<br/>                alert_text = value[&quot;alert&quot;].get(&quot;text&quot;)<br/>            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here<br/>&gt;       raise exception_class(message, screen, stacktrace)<br/><span class="error">E       selenium.common.exceptions.WebDriverException: Message: unknown error: failed to change window state to &#x27;normal&#x27;, current state is &#x27;maximized&#x27;</span><br/><span class="error">E         (Session info: chrome=111.0.5563.65)</span><br/><span class="error">E       Stacktrace:</span><br/><span class="error">E       Backtrace:</span><br/><span class="error">E       	(No symbol) [0x003DDCE3]</span><br/><span class="error">E       	(No symbol) [0x003739D1]</span><br/><span class="error">E       	(No symbol) [0x00284DA8]</span><br/><span class="error">E       	(No symbol) [0x0026F8D0]</span><br/><span class="error">E       	(No symbol) [0x0026EBDE]</span><br/><span class="error">E       	(No symbol) [0x0026F46B]</span><br/><span class="error">E       	(No symbol) [0x002EBDB9]</span><br/><span class="error">E       	(No symbol) [0x002CAECC]</span><br/><span class="error">E       	(No symbol) [0x002DD57C]</span><br/><span class="error">E       	(No symbol) [0x002CACC6]</span><br/><span class="error">E       	(No symbol) [0x002A6F68]</span><br/><span class="error">E       	(No symbol) [0x002A80CD]</span><br/><span class="error">E       	GetHandleVerifier [0x00653832+2506274]</span><br/><span class="error">E       	GetHandleVerifier [0x00689794+2727300]</span><br/><span class="error">E       	GetHandleVerifier [0x0068E36C+2746716]</span><br/><span class="error">E       	GetHandleVerifier [0x00486690+617600]</span><br/><span class="error">E       	(No symbol) [0x0037C712]</span><br/><span class="error">E       	(No symbol) [0x00381FF8]</span><br/><span class="error">E       	(No symbol) [0x003820DB]</span><br/><span class="error">E       	(No symbol) [0x0038C63B]</span><br/><span class="error">E       	BaseThreadInitThunk [0x767700F9+25]</span><br/><span class="error">E       	RtlGetAppContainerNamedObjectPath [0x77E87BBE+286]</span><br/><span class="error">E       	RtlGetAppContainerNamedObjectPath [0x77E87B8E+238]</span><br/><br/>..\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:245: WebDriverException<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_response_of_site[edge]</td>
+          <td class="col-duration">0.82</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;test_smoke.TestSmoke object at 0x000002020F4C4790&gt;, setup = &lt;selenium.webdriver.edge.webdriver.WebDriver (session=&quot;a8686380e1e56a27b9d1a49e3e829a72&quot;)&gt;<br/><br/>    def test_response_of_site(self, setup):<br/>        #try to check some page in the web<br/>        setup.get(&quot;http://127.0.0.1:8080/show_site/1&quot;)<br/>        wait = WebDriverWait(setup, 10)<br/>        body = wait.until(EC.visibility_of_element_located((By.TAG_NAME, &#x27;body&#x27;)))<br/>        #if the body is not displayed : throw an error (normal size)<br/>        assert body.is_displayed(), self.getLogger().error(f&quot;Can&#x27;t display size in {setup.name.lstrip(&#x27;ms&#x27;)}&quot;)<br/>        #set new size and scroll to the top to find the body element<br/>&gt;       setup.set_window_size(640, 480)<br/><br/>test_smoke.py:58: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>..\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:953: in set_window_size<br/>    self.set_window_rect(width=int(width), height=int(height))<br/>..\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:1032: in set_window_rect<br/>    return self.execute(Command.SET_WINDOW_RECT, {&quot;x&quot;: x, &quot;y&quot;: y, &quot;width&quot;: width, &quot;height&quot;: height})[&quot;value&quot;]<br/>..\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:440: in execute<br/>    self.error_handler.check_response(response)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002020FA31610&gt;<br/>response = {&#x27;status&#x27;: 500, &#x27;value&#x27;: &#x27;{&quot;value&quot;:{&quot;error&quot;:&quot;unknown error&quot;,&quot;message&quot;:&quot;unknown error: failed to change window state to...2D089B+905995]\\n\\tBaseThreadInitThunk [0x00007FF9EABC7614+20]\\n\\tRtlUserThreadStart [0x00007FF9EBCA26A1+33]\\n&quot;}}&#x27;}<br/><br/>    def check_response(self, response: Dict[str, Any]) -&gt; None:<br/>        &quot;&quot;&quot;Checks that a JSON response from the WebDriver does not have an<br/>        error.<br/>    <br/>        :Args:<br/>         - response - The JSON response from the WebDriver server as a dictionary<br/>           object.<br/>    <br/>        :Raises: If the response contains an error message.<br/>        &quot;&quot;&quot;<br/>        status = response.get(&quot;status&quot;, None)<br/>        if not status or status == ErrorCode.SUCCESS:<br/>            return<br/>        value = None<br/>        message = response.get(&quot;message&quot;, &quot;&quot;)<br/>        screen: str = response.get(&quot;screen&quot;, &quot;&quot;)<br/>        stacktrace = None<br/>        if isinstance(status, int):<br/>            value_json = response.get(&quot;value&quot;, None)<br/>            if value_json and isinstance(value_json, str):<br/>                import json<br/>    <br/>                try:<br/>                    value = json.loads(value_json)<br/>                    if len(value.keys()) == 1:<br/>                        value = value[&quot;value&quot;]<br/>                    status = value.get(&quot;error&quot;, None)<br/>                    if not status:<br/>                        status = value.get(&quot;status&quot;, ErrorCode.UNKNOWN_ERROR)<br/>                        message = value.get(&quot;value&quot;) or value.get(&quot;message&quot;)<br/>                        if not isinstance(message, str):<br/>                            value = message<br/>                            message = message.get(&quot;message&quot;)<br/>                    else:<br/>                        message = value.get(&quot;message&quot;, None)<br/>                except ValueError:<br/>                    pass<br/>    <br/>        exception_class: Type[WebDriverException]<br/>        if status in ErrorCode.NO_SUCH_ELEMENT:<br/>            exception_class = NoSuchElementException<br/>        elif status in ErrorCode.NO_SUCH_FRAME:<br/>            exception_class = NoSuchFrameException<br/>        elif status in ErrorCode.NO_SUCH_SHADOW_ROOT:<br/>            exception_class = NoSuchShadowRootException<br/>        elif status in ErrorCode.NO_SUCH_WINDOW:<br/>            exception_class = NoSuchWindowException<br/>        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:<br/>            exception_class = StaleElementReferenceException<br/>        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:<br/>            exception_class = ElementNotVisibleException<br/>        elif status in ErrorCode.INVALID_ELEMENT_STATE:<br/>            exception_class = InvalidElementStateException<br/>        elif (<br/>            status in ErrorCode.INVALID_SELECTOR<br/>            or status in ErrorCode.INVALID_XPATH_SELECTOR<br/>            or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER<br/>        ):<br/>            exception_class = InvalidSelectorException<br/>        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:<br/>            exception_class = ElementNotSelectableException<br/>        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:<br/>            exception_class = ElementNotInteractableException<br/>        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:<br/>            exception_class = InvalidCookieDomainException<br/>        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:<br/>            exception_class = UnableToSetCookieException<br/>        elif status in ErrorCode.TIMEOUT:<br/>            exception_class = TimeoutException<br/>        elif status in ErrorCode.SCRIPT_TIMEOUT:<br/>            exception_class = TimeoutException<br/>        elif status in ErrorCode.UNKNOWN_ERROR:<br/>            exception_class = WebDriverException<br/>        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:<br/>            exception_class = UnexpectedAlertPresentException<br/>        elif status in ErrorCode.NO_ALERT_OPEN:<br/>            exception_class = NoAlertPresentException<br/>        elif status in ErrorCode.IME_NOT_AVAILABLE:<br/>            exception_class = ImeNotAvailableException<br/>        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:<br/>            exception_class = ImeActivationFailedException<br/>        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:<br/>            exception_class = MoveTargetOutOfBoundsException<br/>        elif status in ErrorCode.JAVASCRIPT_ERROR:<br/>            exception_class = JavascriptException<br/>        elif status in ErrorCode.SESSION_NOT_CREATED:<br/>            exception_class = SessionNotCreatedException<br/>        elif status in ErrorCode.INVALID_ARGUMENT:<br/>            exception_class = InvalidArgumentException<br/>        elif status in ErrorCode.NO_SUCH_COOKIE:<br/>            exception_class = NoSuchCookieException<br/>        elif status in ErrorCode.UNABLE_TO_CAPTURE_SCREEN:<br/>            exception_class = ScreenshotException<br/>        elif status in ErrorCode.ELEMENT_CLICK_INTERCEPTED:<br/>            exception_class = ElementClickInterceptedException<br/>        elif status in ErrorCode.INSECURE_CERTIFICATE:<br/>            exception_class = InsecureCertificateException<br/>        elif status in ErrorCode.INVALID_COORDINATES:<br/>            exception_class = InvalidCoordinatesException<br/>        elif status in ErrorCode.INVALID_SESSION_ID:<br/>            exception_class = InvalidSessionIdException<br/>        elif status in ErrorCode.UNKNOWN_METHOD:<br/>            exception_class = UnknownMethodException<br/>        else:<br/>            exception_class = WebDriverException<br/>        if not value:<br/>            value = response[&quot;value&quot;]<br/>        if isinstance(value, str):<br/>            raise exception_class(value)<br/>        if message == &quot;&quot; and &quot;message&quot; in value:<br/>            message = value[&quot;message&quot;]<br/>    <br/>        screen = None  # type: ignore[assignment]<br/>        if &quot;screen&quot; in value:<br/>            screen = value[&quot;screen&quot;]<br/>    <br/>        stacktrace = None<br/>        st_value = value.get(&quot;stackTrace&quot;) or value.get(&quot;stacktrace&quot;)<br/>        if st_value:<br/>            if isinstance(st_value, str):<br/>                stacktrace = st_value.split(&quot;\n&quot;)<br/>            else:<br/>                stacktrace = []<br/>                try:<br/>                    for frame in st_value:<br/>                        line = frame.get(&quot;lineNumber&quot;, &quot;&quot;)<br/>                        file = frame.get(&quot;fileName&quot;, &quot;&lt;anonymous&gt;&quot;)<br/>                        if line:<br/>                            file = f&quot;{file}:{line}&quot;<br/>                        meth = frame.get(&quot;methodName&quot;, &quot;&lt;anonymous&gt;&quot;)<br/>                        if &quot;className&quot; in frame:<br/>                            meth = f&quot;{frame[&#x27;className&#x27;]}.{meth}&quot;<br/>                        msg = &quot;    at %s (%s)&quot;<br/>                        msg = msg % (meth, file)<br/>                        stacktrace.append(msg)<br/>                except TypeError:<br/>                    pass<br/>        if exception_class == UnexpectedAlertPresentException:<br/>            alert_text = None<br/>            if &quot;data&quot; in value:<br/>                alert_text = value[&quot;data&quot;].get(&quot;text&quot;)<br/>            elif &quot;alert&quot; in value:<br/>                alert_text = value[&quot;alert&quot;].get(&quot;text&quot;)<br/>            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here<br/>&gt;       raise exception_class(message, screen, stacktrace)<br/><span class="error">E       selenium.common.exceptions.WebDriverException: Message: unknown error: failed to change window state to &#x27;normal&#x27;, current state is &#x27;maximized&#x27;</span><br/><span class="error">E         (Session info: MicrosoftEdge=110.0.1587.69)</span><br/><span class="error">E       Stacktrace:</span><br/><span class="error">E       Backtrace:</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperties::SetProperty [0x00007FF610323C22+14194]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF6102BAEC2+817458]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF4DB50]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF2C61B]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF29F6C]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF2BD42]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FFE0168]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FFB068A]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF83121]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FFC96FE]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FFB0343]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF81FFC]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF80F7E]</span><br/><span class="error">E       	(No symbol) [0x00007FF60FF827EE]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperties::SetProperty [0x00007FF61019EAA0+180080]</span><br/><span class="error">E       	(No symbol) [0x00007FF610050B17]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF6101FF772+49634]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF610202975+62437]</span><br/><span class="error">E       	Microsoft::Applications::Events::ILogManager::DispatchEventBroadcast [0x00007FF610511488+1408232]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF6102C33CF+851519]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF6102C8434+872100]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF6102C858C+872444]</span><br/><span class="error">E       	Microsoft::Applications::Events::EventProperty::EventProperty [0x00007FF6102D089B+905995]</span><br/><span class="error">E       	BaseThreadInitThunk [0x00007FF9EABC7614+20]</span><br/><span class="error">E       	RtlUserThreadStart [0x00007FF9EBCA26A1+33]</span><br/><br/>..\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:245: WebDriverException<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_check_Btn_Clicked[chrome]</td>
+          <td class="col-duration">2.92</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_check_Btn_Clicked:test_acceptance.py:35 The button is clickable in chrome: test Passed!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_fill_form[chrome]</td>
+          <td class="col-duration">1.13</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fill_form:test_acceptance.py:56 User can fill the form in chrome: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_user_navigating[chrome]</td>
+          <td class="col-duration">3.16</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_user_navigating:test_acceptance.py:74 User can navigate in the web in chrome: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_logo[chrome]</td>
+          <td class="col-duration">1.78</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_logo:test_acceptance.py:87 Logo test passed successfully in chrome!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_fill_review_form[chrome]</td>
+          <td class="col-duration">1.40</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fill_review_form:test_acceptance.py:102 User review form can be filled in chrome: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_check_Btn_Clicked[edge]</td>
+          <td class="col-duration">5.04</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_check_Btn_Clicked:test_acceptance.py:35 The button is clickable in edge: test Passed!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_fill_form[edge]</td>
+          <td class="col-duration">1.11</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fill_form:test_acceptance.py:56 User can fill the form in edge: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_user_navigating[edge]</td>
+          <td class="col-duration">3.27</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_user_navigating:test_acceptance.py:74 User can navigate in the web in edge: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_logo[edge]</td>
+          <td class="col-duration">1.60</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_logo:test_acceptance.py:87 Logo test passed successfully in edge!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_fill_review_form[edge]</td>
+          <td class="col-duration">0.99</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fill_review_form:test_acceptance.py:102 User review form can be filled in edge: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_check_Btn_Clicked[firefox]</td>
+          <td class="col-duration">7.98</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_check_Btn_Clicked:test_acceptance.py:35 The button is clickable in firefox: test Passed!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_fill_form[firefox]</td>
+          <td class="col-duration">0.47</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fill_form:test_acceptance.py:56 User can fill the form in firefox: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_user_navigating[firefox]</td>
+          <td class="col-duration">2.69</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_user_navigating:test_acceptance.py:74 User can navigate in the web in firefox: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_logo[firefox]</td>
+          <td class="col-duration">1.17</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_logo:test_acceptance.py:87 Logo test passed successfully in firefox!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_acceptance.py::TestAcceptance::test_fill_review_form[firefox]</td>
+          <td class="col-duration">1.07</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fill_review_form:test_acceptance.py:102 User review form can be filled in firefox: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_add1[chrome]</td>
+          <td class="col-duration">4.82</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add1:test_functional.py:53 First add test passed successfully in chrome: can&#x27;t  add this site doe to null location data!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_add2[chrome]</td>
+          <td class="col-duration">1.12</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add2:test_functional.py:77 Second add test passed successfully in chrome!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_delete1[chrome]</td>
+          <td class="col-duration">0.19</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_delete1:test_functional.py:87 The element is already deleted from chrome : test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_delete[chrome]</td>
+          <td class="col-duration">0.21</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_delete:test_functional.py:97 The element is already deleted from chrome: test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_update1[chrome]</td>
+          <td class="col-duration">3.63</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_update1:test_functional.py:116 Update test 1 passed successfully in chrome<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_update2[chrome]</td>
+          <td class="col-duration">0.76</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_update2:test_functional.py:133 Update test 2 passed successfully in chrome<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_add1[edge]</td>
+          <td class="col-duration">3.88</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add1:test_functional.py:53 First add test passed successfully in edge: can&#x27;t  add this site doe to null location data!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_add2[edge]</td>
+          <td class="col-duration">1.18</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add2:test_functional.py:77 Second add test passed successfully in edge!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_delete1[edge]</td>
+          <td class="col-duration">0.28</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_delete1:test_functional.py:87 The element is already deleted from edge : test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_delete[edge]</td>
+          <td class="col-duration">0.24</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_delete:test_functional.py:97 The element is already deleted from edge: test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_update1[edge]</td>
+          <td class="col-duration">3.49</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_update1:test_functional.py:116 Update test 1 passed successfully in edge<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_update2[edge]</td>
+          <td class="col-duration">0.69</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_update2:test_functional.py:133 Update test 2 passed successfully in edge<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_add1[firefox]</td>
+          <td class="col-duration">7.60</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add1:test_functional.py:53 First add test passed successfully in firefox: can&#x27;t  add this site doe to null location data!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_add2[firefox]</td>
+          <td class="col-duration">0.67</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add2:test_functional.py:77 Second add test passed successfully in firefox!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_delete1[firefox]</td>
+          <td class="col-duration">0.18</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_delete1:test_functional.py:87 The element is already deleted from firefox : test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_delete[firefox]</td>
+          <td class="col-duration">0.13</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_delete:test_functional.py:97 The element is already deleted from firefox: test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_update1[firefox]</td>
+          <td class="col-duration">3.10</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_update1:test_functional.py:116 Update test 1 passed successfully in firefox<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_functional.py::TestFunctional::test_update2[firefox]</td>
+          <td class="col-duration">0.82</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_update2:test_functional.py:133 Update test 2 passed successfully in firefox<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_database_data[chrome]</td>
+          <td class="col-duration">1.22</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_database_data:test_security.py:47 Database data test passed successfully: can&#x27;t add illegal picture files!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_files_in_dataBase[chrome]</td>
+          <td class="col-duration">0.53</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>[(&#x27;oldCityJerusalim.jpg&#x27;,), (&#x27;Qumran.jpg&#x27;,), (&#x27;caesarea.jpg&#x27;,), (&#x27;beitGofrin.jpg&#x27;,), (&#x27;beit-shaan.jpg&#x27;,), (&#x27;herod_s-palace.jpg&#x27;,), (&#x27;55.jpg&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;OLD CONFTEST.docx&#x27;,), (&#x27;OLD CONFTEST.docx&#x27;,), (&#x27;index.html&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;app.py&#x27;,), (&#x27;Python Flask Framework.pdf&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,)]
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     test_files_in_dataBase:test_security.py:73 Illegal files test passed successfully: can&#x27;t add illegal files!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_sign_up_matching_data[chrome]</td>
+          <td class="col-duration">0.51</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_sign_up_matching_data:test_security.py:109 Sign up matching data test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_add_same_site[chrome-1-2]</td>
+          <td class="col-duration">0.58</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add_same_site:test_security.py:147 Add same site to database test passed successfully: can&#x27;t add the same site in chrome browser!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_add_same_site[chrome-2-2]</td>
+          <td class="col-duration">0.37</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add_same_site:test_security.py:147 Add same site to database test passed successfully: can&#x27;t add the same site in chrome browser!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_fetch_app_content[chrome]</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fetch_app_content:test_security.py:161 Max content test passed successfully : can&#x27;t accept more content than the defined length!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_database_data[edge]</td>
+          <td class="col-duration">3.36</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_database_data:test_security.py:47 Database data test passed successfully: can&#x27;t add illegal picture files!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_files_in_dataBase[edge]</td>
+          <td class="col-duration">0.56</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>[(&#x27;oldCityJerusalim.jpg&#x27;,), (&#x27;Qumran.jpg&#x27;,), (&#x27;caesarea.jpg&#x27;,), (&#x27;beitGofrin.jpg&#x27;,), (&#x27;beit-shaan.jpg&#x27;,), (&#x27;herod_s-palace.jpg&#x27;,), (&#x27;55.jpg&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;OLD CONFTEST.docx&#x27;,), (&#x27;OLD CONFTEST.docx&#x27;,), (&#x27;index.html&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;app.py&#x27;,), (&#x27;Python Flask Framework.pdf&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,)]
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     test_files_in_dataBase:test_security.py:73 Illegal files test passed successfully: can&#x27;t add illegal files!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_sign_up_matching_data[edge]</td>
+          <td class="col-duration">0.64</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_sign_up_matching_data:test_security.py:109 Sign up matching data test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_add_same_site[edge-1-2]</td>
+          <td class="col-duration">0.57</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add_same_site:test_security.py:147 Add same site to database test passed successfully: can&#x27;t add the same site in edge browser!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_add_same_site[edge-2-2]</td>
+          <td class="col-duration">0.52</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add_same_site:test_security.py:147 Add same site to database test passed successfully: can&#x27;t add the same site in edge browser!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_fetch_app_content[edge]</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fetch_app_content:test_security.py:161 Max content test passed successfully : can&#x27;t accept more content than the defined length!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_database_data[firefox]</td>
+          <td class="col-duration">7.26</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_database_data:test_security.py:47 Database data test passed successfully: can&#x27;t add illegal picture files!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_files_in_dataBase[firefox]</td>
+          <td class="col-duration">0.48</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>[(&#x27;oldCityJerusalim.jpg&#x27;,), (&#x27;Qumran.jpg&#x27;,), (&#x27;caesarea.jpg&#x27;,), (&#x27;beitGofrin.jpg&#x27;,), (&#x27;beit-shaan.jpg&#x27;,), (&#x27;herod_s-palace.jpg&#x27;,), (&#x27;55.jpg&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;OLD CONFTEST.docx&#x27;,), (&#x27;OLD CONFTEST.docx&#x27;,), (&#x27;index.html&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;solarEdge Experience (1).xlsx&#x27;,), (&#x27;app.py&#x27;,), (&#x27;Python Flask Framework.pdf&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;11.jfif&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,), (&#x27;55.JPG&#x27;,)]
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     test_files_in_dataBase:test_security.py:73 Illegal files test passed successfully: can&#x27;t add illegal files!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_sign_up_matching_data[firefox]</td>
+          <td class="col-duration">0.31</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_sign_up_matching_data:test_security.py:109 Sign up matching data test passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_add_same_site[firefox-1-2]</td>
+          <td class="col-duration">0.27</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add_same_site:test_security.py:147 Add same site to database test passed successfully: can&#x27;t add the same site in firefox browser!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_add_same_site[firefox-2-2]</td>
+          <td class="col-duration">0.23</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_add_same_site:test_security.py:147 Add same site to database test passed successfully: can&#x27;t add the same site in firefox browser!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_security.py::TestSecurity::test_fetch_app_content[firefox]</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_fetch_app_content:test_security.py:161 Max content test passed successfully : can&#x27;t accept more content than the defined length!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_checkTitle[chrome]</td>
+          <td class="col-duration">1.89</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_checkTitle:test_smoke.py:20 Check title test (smoke test) passed successfully in chrome --&gt; the title is as required!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_diplayed_picture[chrome]</td>
+          <td class="col-duration">2.42</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_diplayed_picture:test_smoke.py:33 Displayed picture test in chrome passed successfully!!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_picture2_is_displayed[chrome]</td>
+          <td class="col-duration">0.71</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_picture2_is_displayed:test_smoke.py:47 Displayed picture test in chrome passed successfully!!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_links_of_main_page[chrome]</td>
+          <td class="col-duration">0.53</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_links_of_main_page:test_smoke.py:81 Link is working as required in chrome: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_checkTitle[edge]</td>
+          <td class="col-duration">2.37</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_checkTitle:test_smoke.py:20 Check title test (smoke test) passed successfully in edge --&gt; the title is as required!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_diplayed_picture[edge]</td>
+          <td class="col-duration">2.83</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_diplayed_picture:test_smoke.py:33 Displayed picture test in edge passed successfully!!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_picture2_is_displayed[edge]</td>
+          <td class="col-duration">0.96</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_picture2_is_displayed:test_smoke.py:47 Displayed picture test in edge passed successfully!!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_links_of_main_page[edge]</td>
+          <td class="col-duration">0.81</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_links_of_main_page:test_smoke.py:81 Link is working as required in edge: Passed successfully!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_checkTitle[firefox]</td>
+          <td class="col-duration">6.64</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_checkTitle:test_smoke.py:20 Check title test (smoke test) passed successfully in firefox --&gt; the title is as required!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_diplayed_picture[firefox]</td>
+          <td class="col-duration">4.29</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_diplayed_picture:test_smoke.py:33 Displayed picture test in firefox passed successfully!!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_picture2_is_displayed[firefox]</td>
+          <td class="col-duration">1.10</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_picture2_is_displayed:test_smoke.py:47 Displayed picture test in firefox passed successfully!!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_response_of_site[firefox]</td>
+          <td class="col-duration">1.29</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_response_of_site:test_smoke.py:70 The site can get all size in firefox<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test_smoke.py::TestSmoke::test_links_of_main_page[firefox]</td>
+          <td class="col-duration">0.53</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -------------------------------Captured log call-------------------------------- <br/>INFO     test_links_of_main_page:test_smoke.py:81 Link is working as required in firefox: Passed successfully!<br/></div></td></tr></tbody></table></body></html>

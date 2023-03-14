@@ -1,0 +1,348 @@
+
+2023-03-13 14:38:22,762 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-13 15:25:16,610 :INFO : test_add1 :First add test passed successfully in chrome: can't  add this site doe to null location data!
+2023-03-13 15:25:20,647 :INFO : test_add1 :First add test passed successfully in msedge: can't  add this site doe to null location data!
+2023-03-13 15:25:28,415 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-13 15:30:00,369 :INFO : test_add2 :Second add test passed successfully in chrome!
+2023-03-13 15:30:05,151 :INFO : test_add2 :Second add test passed successfully in msedge!
+2023-03-13 15:30:13,286 :INFO : test_add2 :Second add test passed successfully in firefox!
+2023-03-13 15:32:27,938 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-13 15:32:28,372 :INFO : test_fill_form :User can fill the form in chrome: Passed successfully!
+2023-03-13 15:32:32,220 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-13 15:32:33,399 :INFO : test_logo :Logo test passed successfully in chrome!
+2023-03-13 15:32:34,192 :INFO : test_fill_review_form :User review form can be filled in chrome: Passed successfully!
+2023-03-13 15:32:38,052 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-13 15:32:38,468 :INFO : test_fill_form :User can fill the form in msedge: Passed successfully!
+2023-03-13 15:32:41,363 :INFO : test_user_navigating :User can navigate in the web in msedge: Passed successfully!
+2023-03-13 15:32:42,138 :INFO : test_logo :Logo test passed successfully in msedge!
+2023-03-13 15:32:42,847 :INFO : test_fill_review_form :User review form can be filled in msedge: Passed successfully!
+2023-03-13 15:32:50,669 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-13 15:32:50,930 :INFO : test_fill_form :User can fill the form in firefox: Passed successfully!
+2023-03-13 15:32:53,808 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-13 15:32:54,545 :INFO : test_logo :Logo test passed successfully in firefox!
+2023-03-13 15:32:55,271 :INFO : test_fill_review_form :User review form can be filled in firefox: Passed successfully!
+2023-03-13 15:32:59,757 :INFO : test_add1 :First add test passed successfully in chrome: can't  add this site doe to null location data!
+2023-03-13 15:33:00,795 :INFO : test_add2 :Second add test passed successfully in chrome!
+2023-03-13 15:33:01,050 :INFO : test_delete1 :The element is already deleted from chrome
+2023-03-13 15:33:01,319 :INFO : test_delete :The element is already deletedfrom chrome
+2023-03-13 15:33:03,823 :ERROR : test_update1 :The site does not updated in chrome
+2023-03-13 15:33:06,578 :INFO : test_add1 :First add test passed successfully in msedge: can't  add this site doe to null location data!
+2023-03-13 15:33:07,689 :INFO : test_add2 :Second add test passed successfully in msedge!
+2023-03-13 15:33:07,927 :INFO : test_delete1 :The element is already deleted from msedge
+2023-03-13 15:33:08,226 :INFO : test_delete :The element is already deletedfrom msedge
+2023-03-13 15:33:11,398 :ERROR : test_update1 :The site does not updated in msedge
+2023-03-13 15:33:17,582 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-13 15:33:18,513 :INFO : test_add2 :Second add test passed successfully in firefox!
+2023-03-13 15:33:18,905 :INFO : test_delete1 :The element is already deleted from firefox
+2023-03-13 15:33:19,039 :INFO : test_delete :The element is already deletedfrom firefox
+2023-03-13 15:33:22,642 :ERROR : test_update1 :The site does not updated in firefox
+2023-03-13 15:33:24,526 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 15:33:25,455 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 15:33:26,593 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 15:33:27,441 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-13 15:33:27,861 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-13 15:33:27,883 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 15:33:33,263 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 15:33:33,960 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 15:33:34,884 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 15:33:35,325 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in msedge browser!
+2023-03-13 15:33:35,680 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in msedge browser!
+2023-03-13 15:33:35,699 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 15:33:42,909 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 15:33:43,333 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 15:33:43,653 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 15:33:43,868 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-13 15:33:44,128 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-13 15:33:44,153 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 15:33:47,821 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in chrome --> the title is as required!
+2023-03-13 15:33:50,149 :INFO : test_diplayed_picture :Displayed picture test in chrome passed successfully!!
+2023-03-13 15:33:50,997 :INFO : test_picture2_is_displayed :Displayed picture test in chrome passed successfully!!
+2023-03-13 15:33:52,241 :INFO : test_links_of_main_page :Link is working as required in chrome: Passed successfully!
+2023-03-13 15:33:56,972 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in msedge --> the title is as required!
+2023-03-13 15:34:00,834 :INFO : test_diplayed_picture :Displayed picture test in msedge passed successfully!!
+2023-03-13 15:34:02,378 :INFO : test_picture2_is_displayed :Displayed picture test in msedge passed successfully!!
+2023-03-13 15:34:04,060 :INFO : test_links_of_main_page :Link is working as required in msedge: Passed successfully!
+2023-03-13 15:34:11,929 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in firefox --> the title is as required!
+2023-03-13 15:34:14,194 :INFO : test_diplayed_picture :Displayed picture test in firefox passed successfully!!
+2023-03-13 15:34:14,787 :INFO : test_picture2_is_displayed :Displayed picture test in firefox passed successfully!!
+2023-03-13 15:34:15,716 :INFO : test_response_of_site :The site can get all size in firefox
+2023-03-13 15:34:16,284 :INFO : test_links_of_main_page :Link is working as required in firefox: Passed successfully!
+2023-03-13 15:54:13,526 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-13 15:54:13,883 :INFO : test_fill_form :User can fill the form in chrome: Passed successfully!
+2023-03-13 15:54:18,990 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-13 15:54:20,230 :INFO : test_logo :Logo test passed successfully in chrome!
+2023-03-13 15:54:20,999 :INFO : test_fill_review_form :User review form can be filled in chrome: Passed successfully!
+2023-03-13 15:54:24,932 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-13 15:54:25,433 :INFO : test_fill_form :User can fill the form in msedge: Passed successfully!
+2023-03-13 15:54:28,068 :INFO : test_user_navigating :User can navigate in the web in msedge: Passed successfully!
+2023-03-13 15:54:28,844 :INFO : test_logo :Logo test passed successfully in msedge!
+2023-03-13 15:54:29,651 :INFO : test_fill_review_form :User review form can be filled in msedge: Passed successfully!
+2023-03-13 15:54:37,397 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-13 15:54:37,633 :INFO : test_fill_form :User can fill the form in firefox: Passed successfully!
+2023-03-13 15:54:39,978 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-13 15:54:40,757 :INFO : test_logo :Logo test passed successfully in firefox!
+2023-03-13 15:54:41,499 :INFO : test_fill_review_form :User review form can be filled in firefox: Passed successfully!
+2023-03-13 15:54:45,290 :INFO : test_add1 :First add test passed successfully in chrome: can't  add this site doe to null location data!
+2023-03-13 15:54:46,303 :INFO : test_add2 :Second add test passed successfully in chrome!
+2023-03-13 15:54:46,534 :INFO : test_delete1 :The element is already deleted from chrome
+2023-03-13 15:54:46,804 :INFO : test_delete :The element is already deletedfrom chrome
+2023-03-13 15:54:50,493 :INFO : test_add1 :First add test passed successfully in msedge: can't  add this site doe to null location data!
+2023-03-13 15:54:51,576 :INFO : test_add2 :Second add test passed successfully in msedge!
+2023-03-13 15:54:51,814 :INFO : test_delete1 :The element is already deleted from msedge
+2023-03-13 15:54:52,048 :INFO : test_delete :The element is already deletedfrom msedge
+2023-03-13 15:54:59,573 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-13 15:55:00,342 :INFO : test_add2 :Second add test passed successfully in firefox!
+2023-03-13 15:55:00,492 :INFO : test_delete1 :The element is already deleted from firefox
+2023-03-13 15:55:00,624 :INFO : test_delete :The element is already deletedfrom firefox
+2023-03-13 15:55:03,879 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 15:55:04,384 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 15:55:05,030 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 15:55:05,649 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-13 15:55:06,071 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-13 15:55:06,098 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 15:55:09,541 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 15:55:10,029 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 15:55:10,538 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 15:55:11,016 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in msedge browser!
+2023-03-13 15:55:11,409 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in msedge browser!
+2023-03-13 15:55:11,439 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 15:55:18,696 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 15:55:19,091 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 15:55:19,448 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 15:55:19,691 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-13 15:55:19,976 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-13 15:55:19,995 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 15:55:23,550 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in chrome --> the title is as required!
+2023-03-13 15:55:25,933 :INFO : test_diplayed_picture :Displayed picture test in chrome passed successfully!!
+2023-03-13 15:55:26,521 :INFO : test_picture2_is_displayed :Displayed picture test in chrome passed successfully!!
+2023-03-13 15:55:27,575 :INFO : test_response_of_site :The site can get all size in chrome
+2023-03-13 15:55:28,158 :INFO : test_links_of_main_page :Link is working as required in chrome: Passed successfully!
+2023-03-13 15:55:31,968 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in msedge --> the title is as required!
+2023-03-13 15:55:33,723 :INFO : test_diplayed_picture :Displayed picture test in msedge passed successfully!!
+2023-03-13 15:55:34,295 :INFO : test_picture2_is_displayed :Displayed picture test in msedge passed successfully!!
+2023-03-13 15:55:35,229 :INFO : test_response_of_site :The site can get all size in msedge
+2023-03-13 15:55:35,558 :INFO : test_links_of_main_page :Link is working as required in msedge: Passed successfully!
+2023-03-13 15:55:43,044 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in firefox --> the title is as required!
+2023-03-13 15:55:45,229 :INFO : test_diplayed_picture :Displayed picture test in firefox passed successfully!!
+2023-03-13 15:55:45,726 :INFO : test_picture2_is_displayed :Displayed picture test in firefox passed successfully!!
+2023-03-13 15:55:46,626 :INFO : test_response_of_site :The site can get all size in firefox
+2023-03-13 15:55:47,084 :INFO : test_links_of_main_page :Link is working as required in firefox: Passed successfully!
+2023-03-13 16:02:46,277 :ERROR : test_update1 :The site does not updated in chrome
+2023-03-13 16:02:50,050 :ERROR : test_update1 :The site does not updated in msedge
+2023-03-13 16:03:01,070 :ERROR : test_update1 :The site does not updated in firefox
+2023-03-13 16:03:32,076 :INFO : test_update1 :Update test 1 passed successfully in chrome
+2023-03-13 16:03:38,393 :INFO : test_update1 :Update test 1 passed successfully in msedge
+2023-03-13 16:03:48,595 :INFO : test_update1 :Update test 1 passed successfully in firefox
+2023-03-13 16:06:26,210 :ERROR : test_add2 :No site is added to chrome
+2023-03-13 16:06:28,330 :ERROR : test_add2 :No site is added to msedge
+2023-03-13 16:06:36,512 :ERROR : test_add2 :No site is added to firefox
+2023-03-13 16:06:51,171 :INFO : test_add2 :Second add test passed successfully in chrome!
+2023-03-13 16:06:56,081 :INFO : test_add2 :Second add test passed successfully in msedge!
+2023-03-13 16:07:04,354 :INFO : test_add2 :Second add test passed successfully in firefox!
+2023-03-13 16:07:26,724 :INFO : test_update2 :Update test 2 passed successfully in chrome
+2023-03-13 16:07:35,366 :INFO : test_update2 :Update test 2 passed successfully in msedge
+2023-03-13 16:07:48,040 :INFO : test_update2 :Update test 2 passed successfully in firefox
+2023-03-13 16:10:06,780 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-13 16:10:07,129 :INFO : test_fill_form :User can fill the form in chrome: Passed successfully!
+2023-03-13 16:10:09,780 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-13 16:10:10,785 :INFO : test_logo :Logo test passed successfully in chrome!
+2023-03-13 16:10:11,544 :INFO : test_fill_review_form :User review form can be filled in chrome: Passed successfully!
+2023-03-13 16:10:15,526 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-13 16:10:16,113 :INFO : test_fill_form :User can fill the form in msedge: Passed successfully!
+2023-03-13 16:10:18,673 :INFO : test_user_navigating :User can navigate in the web in msedge: Passed successfully!
+2023-03-13 16:10:19,463 :INFO : test_logo :Logo test passed successfully in msedge!
+2023-03-13 16:10:20,185 :INFO : test_fill_review_form :User review form can be filled in msedge: Passed successfully!
+2023-03-13 16:10:28,017 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-13 16:10:28,284 :INFO : test_fill_form :User can fill the form in firefox: Passed successfully!
+2023-03-13 16:10:30,460 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-13 16:10:31,215 :INFO : test_logo :Logo test passed successfully in firefox!
+2023-03-13 16:10:32,027 :INFO : test_fill_review_form :User review form can be filled in firefox: Passed successfully!
+2023-03-13 16:10:36,487 :INFO : test_add1 :First add test passed successfully in chrome: can't  add this site doe to null location data!
+2023-03-13 16:10:37,529 :INFO : test_add2 :Second add test passed successfully in chrome!
+2023-03-13 16:10:37,782 :INFO : test_delete1 :The element is already deleted from chrome
+2023-03-13 16:10:38,049 :INFO : test_delete :The element is already deletedfrom chrome
+2023-03-13 16:10:40,857 :INFO : test_update1 :Update test 1 passed successfully in chrome
+2023-03-13 16:10:44,638 :INFO : test_update2 :Update test 2 passed successfully in chrome
+2023-03-13 16:10:48,270 :INFO : test_add1 :First add test passed successfully in msedge: can't  add this site doe to null location data!
+2023-03-13 16:10:49,273 :INFO : test_add2 :Second add test passed successfully in msedge!
+2023-03-13 16:10:49,483 :INFO : test_delete1 :The element is already deleted from msedge
+2023-03-13 16:10:49,730 :INFO : test_delete :The element is already deletedfrom msedge
+2023-03-13 16:10:52,446 :INFO : test_update1 :Update test 1 passed successfully in msedge
+2023-03-13 16:10:56,139 :INFO : test_update2 :Update test 2 passed successfully in msedge
+2023-03-13 16:11:03,567 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-13 16:11:04,278 :INFO : test_add2 :Second add test passed successfully in firefox!
+2023-03-13 16:11:04,412 :INFO : test_delete1 :The element is already deleted from firefox
+2023-03-13 16:11:04,557 :INFO : test_delete :The element is already deletedfrom firefox
+2023-03-13 16:11:07,633 :INFO : test_update1 :Update test 1 passed successfully in firefox
+2023-03-13 16:11:11,464 :INFO : test_update2 :Update test 2 passed successfully in firefox
+2023-03-13 16:11:14,720 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 16:11:15,252 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 16:11:15,771 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 16:11:16,357 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-13 16:11:16,744 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-13 16:11:16,775 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 16:11:20,182 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 16:11:20,701 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 16:11:21,158 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 16:11:21,591 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in msedge browser!
+2023-03-13 16:11:21,973 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in msedge browser!
+2023-03-13 16:11:21,992 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 16:11:29,255 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-13 16:11:29,663 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-13 16:11:30,018 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-13 16:11:30,245 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-13 16:11:30,503 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-13 16:11:30,533 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-13 16:11:34,252 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in chrome --> the title is as required!
+2023-03-13 16:11:36,033 :INFO : test_diplayed_picture :Displayed picture test in chrome passed successfully!!
+2023-03-13 16:11:36,618 :INFO : test_picture2_is_displayed :Displayed picture test in chrome passed successfully!!
+2023-03-13 16:11:37,711 :INFO : test_response_of_site :The site can get all size in chrome
+2023-03-13 16:11:38,321 :INFO : test_links_of_main_page :Link is working as required in chrome: Passed successfully!
+2023-03-13 16:11:42,004 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in msedge --> the title is as required!
+2023-03-13 16:11:43,790 :INFO : test_diplayed_picture :Displayed picture test in msedge passed successfully!!
+2023-03-13 16:11:44,382 :INFO : test_picture2_is_displayed :Displayed picture test in msedge passed successfully!!
+2023-03-13 16:11:45,370 :INFO : test_response_of_site :The site can get all size in msedge
+2023-03-13 16:11:45,745 :INFO : test_links_of_main_page :Link is working as required in msedge: Passed successfully!
+2023-03-13 16:11:53,333 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in firefox --> the title is as required!
+2023-03-13 16:11:55,432 :INFO : test_diplayed_picture :Displayed picture test in firefox passed successfully!!
+2023-03-13 16:11:55,948 :INFO : test_picture2_is_displayed :Displayed picture test in firefox passed successfully!!
+2023-03-13 16:11:56,768 :INFO : test_response_of_site :The site can get all size in firefox
+2023-03-13 16:11:57,271 :INFO : test_links_of_main_page :Link is working as required in firefox: Passed successfully!
+2023-03-14 20:03:24,142 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in chrome --> the title is as required!
+2023-03-14 20:03:28,506 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in msedge --> the title is as required!
+2023-03-14 20:03:38,473 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in firefox --> the title is as required!
+2023-03-14 20:04:16,653 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in chrome --> the title is as required!
+2023-03-14 20:04:20,267 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in edge --> the title is as required!
+2023-03-14 20:04:28,841 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in firefox --> the title is as required!
+2023-03-14 20:06:22,729 :INFO : test_fill_form :User can fill the form in chrome: Passed successfully!
+2023-03-14 20:06:27,486 :INFO : test_fill_form :User can fill the form in msedge: Passed successfully!
+2023-03-14 20:06:35,286 :INFO : test_fill_form :User can fill the form in firefox: Passed successfully!
+2023-03-14 20:08:05,026 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:08:09,719 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:08:17,697 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:08:57,779 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:09:04,210 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:09:14,287 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:10:52,564 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:10:58,257 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:11:07,934 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:11:24,453 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:11:32,008 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:12:32,371 :ERROR : test_check_Btn_Clicked :The button is bot clickable in chrome
+2023-03-14 20:12:37,501 :ERROR : test_check_Btn_Clicked :The button is bot clickable in msedge
+2023-03-14 20:12:48,626 :ERROR : test_check_Btn_Clicked :The button is bot clickable in firefox
+2023-03-14 20:19:00,982 :INFO : test_logo :Logo test passed successfully in chrome!
+2023-03-14 20:19:07,679 :INFO : test_logo :Logo test passed successfully in msedge!
+2023-03-14 20:19:18,041 :INFO : test_logo :Logo test passed successfully in firefox!
+2023-03-14 20:20:25,880 :INFO : test_fill_review_form :User review form can be filled in chrome: Passed successfully!
+2023-03-14 20:20:32,177 :INFO : test_fill_review_form :User review form can be filled in msedge: Passed successfully!
+2023-03-14 20:20:42,249 :INFO : test_fill_review_form :User review form can be filled in firefox: Passed successfully!
+2023-03-14 20:21:44,639 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:21:49,531 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:21:57,638 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:23:14,968 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:23:19,202 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:23:27,498 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:24:11,249 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:24:15,822 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:24:23,740 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:24:46,862 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 20:24:52,205 :INFO : test_check_Btn_Clicked :The button is clickable in msedge: test Passed!
+2023-03-14 20:25:00,291 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 20:32:04,385 :INFO : test_delete :The element is already deletedfrom chrome
+2023-03-14 20:32:08,645 :INFO : test_delete :The element is already deletedfrom edge
+2023-03-14 20:32:17,059 :INFO : test_delete :The element is already deletedfrom firefox
+2023-03-14 20:35:30,547 :INFO : test_add1 :First add test passed successfully in chrome: can't  add this site doe to null location data!
+2023-03-14 20:35:36,324 :INFO : test_add1 :First add test passed successfully in edge: can't  add this site doe to null location data!
+2023-03-14 20:35:46,069 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-14 20:48:23,855 :INFO : test_update1 :Update test 1 passed successfully in chrome
+2023-03-14 20:48:30,533 :INFO : test_update1 :Update test 1 passed successfully in msedge
+2023-03-14 20:48:41,119 :INFO : test_update1 :Update test 1 passed successfully in firefox
+2023-03-14 20:51:19,052 :INFO : test_update2 :Update test 2 passed successfully in chrome
+2023-03-14 20:51:24,800 :INFO : test_update2 :Update test 2 passed successfully in edge
+2023-03-14 20:51:35,571 :INFO : test_update2 :Update test 2 passed successfully in firefox
+2023-03-14 20:51:55,718 :INFO : test_update2 :Update test 2 passed successfully in chrome
+2023-03-14 20:52:01,969 :INFO : test_update2 :Update test 2 passed successfully in edge
+2023-03-14 20:52:12,764 :INFO : test_update2 :Update test 2 passed successfully in firefox
+2023-03-14 21:01:56,125 :INFO : test_fill_form :User can fill the form in chrome: Passed successfully!
+2023-03-14 21:02:00,681 :INFO : test_fill_form :User can fill the form in edge: Passed successfully!
+2023-03-14 21:02:08,630 :INFO : test_fill_form :User can fill the form in firefox: Passed successfully!
+2023-03-14 21:13:21,750 :ERROR : test_user_navigating :can't navigate to the bottom in chrome
+2023-03-14 21:13:26,087 :ERROR : test_user_navigating :can't navigate to the bottom in edge
+2023-03-14 21:13:34,893 :ERROR : test_user_navigating :can't navigate to the bottom in firefox
+2023-03-14 21:14:15,676 :ERROR : test_user_navigating :can't navigate to the bottom in chrome
+2023-03-14 21:14:19,711 :ERROR : test_user_navigating :can't navigate to the bottom in edge
+2023-03-14 21:14:28,182 :ERROR : test_user_navigating :can't navigate to the bottom in firefox
+2023-03-14 21:20:06,830 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-14 21:20:13,513 :INFO : test_user_navigating :User can navigate in the web in edge: Passed successfully!
+2023-03-14 21:20:23,452 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-14 21:21:13,457 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-14 21:21:19,830 :INFO : test_user_navigating :User can navigate in the web in edge: Passed successfully!
+2023-03-14 21:21:29,672 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-14 21:23:47,443 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-14 21:23:55,406 :INFO : test_user_navigating :User can navigate in the web in edge: Passed successfully!
+2023-03-14 21:24:05,424 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-14 21:51:30,701 :INFO : test_check_Btn_Clicked :The button is clickable in chrome: test Passed!
+2023-03-14 21:51:31,833 :INFO : test_fill_form :User can fill the form in chrome: Passed successfully!
+2023-03-14 21:51:35,001 :INFO : test_user_navigating :User can navigate in the web in chrome: Passed successfully!
+2023-03-14 21:51:36,786 :INFO : test_logo :Logo test passed successfully in chrome!
+2023-03-14 21:51:38,194 :INFO : test_fill_review_form :User review form can be filled in chrome: Passed successfully!
+2023-03-14 21:51:43,240 :INFO : test_check_Btn_Clicked :The button is clickable in edge: test Passed!
+2023-03-14 21:51:44,354 :INFO : test_fill_form :User can fill the form in edge: Passed successfully!
+2023-03-14 21:51:47,630 :INFO : test_user_navigating :User can navigate in the web in edge: Passed successfully!
+2023-03-14 21:51:49,241 :INFO : test_logo :Logo test passed successfully in edge!
+2023-03-14 21:51:50,237 :INFO : test_fill_review_form :User review form can be filled in edge: Passed successfully!
+2023-03-14 21:51:58,221 :INFO : test_check_Btn_Clicked :The button is clickable in firefox: test Passed!
+2023-03-14 21:51:58,697 :INFO : test_fill_form :User can fill the form in firefox: Passed successfully!
+2023-03-14 21:52:01,393 :INFO : test_user_navigating :User can navigate in the web in firefox: Passed successfully!
+2023-03-14 21:52:02,564 :INFO : test_logo :Logo test passed successfully in firefox!
+2023-03-14 21:52:03,636 :INFO : test_fill_review_form :User review form can be filled in firefox: Passed successfully!
+2023-03-14 21:52:08,466 :INFO : test_add1 :First add test passed successfully in chrome: can't  add this site doe to null location data!
+2023-03-14 21:52:09,593 :INFO : test_add2 :Second add test passed successfully in chrome!
+2023-03-14 21:52:09,790 :INFO : test_delete1 :The element is already deleted from chrome : test passed successfully!
+2023-03-14 21:52:10,007 :INFO : test_delete :The element is already deleted from chrome: test passed successfully!
+2023-03-14 21:52:13,647 :INFO : test_update1 :Update test 1 passed successfully in chrome
+2023-03-14 21:52:14,411 :INFO : test_update2 :Update test 2 passed successfully in chrome
+2023-03-14 21:52:18,295 :INFO : test_add1 :First add test passed successfully in edge: can't  add this site doe to null location data!
+2023-03-14 21:52:19,481 :INFO : test_add2 :Second add test passed successfully in edge!
+2023-03-14 21:52:19,768 :INFO : test_delete1 :The element is already deleted from edge : test passed successfully!
+2023-03-14 21:52:20,013 :INFO : test_delete :The element is already deleted from edge: test passed successfully!
+2023-03-14 21:52:23,508 :INFO : test_update1 :Update test 1 passed successfully in edge
+2023-03-14 21:52:24,203 :INFO : test_update2 :Update test 2 passed successfully in edge
+2023-03-14 21:52:31,806 :INFO : test_add1 :First add test passed successfully in firefox: can't  add this site doe to null location data!
+2023-03-14 21:52:32,485 :INFO : test_add2 :Second add test passed successfully in firefox!
+2023-03-14 21:52:32,668 :INFO : test_delete1 :The element is already deleted from firefox : test passed successfully!
+2023-03-14 21:52:32,799 :INFO : test_delete :The element is already deleted from firefox: test passed successfully!
+2023-03-14 21:52:35,900 :INFO : test_update1 :Update test 1 passed successfully in firefox
+2023-03-14 21:52:36,727 :INFO : test_update2 :Update test 2 passed successfully in firefox
+2023-03-14 21:52:40,007 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-14 21:52:40,552 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-14 21:52:41,069 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-14 21:52:41,660 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-14 21:52:42,040 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in chrome browser!
+2023-03-14 21:52:42,066 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-14 21:52:45,434 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-14 21:52:46,001 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-14 21:52:46,651 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-14 21:52:47,225 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in edge browser!
+2023-03-14 21:52:47,747 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in edge browser!
+2023-03-14 21:52:47,770 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-14 21:52:55,032 :INFO : test_database_data :Database data test passed successfully: can't add illegal picture files!
+2023-03-14 21:52:55,524 :INFO : test_files_in_dataBase :Illegal files test passed successfully: can't add illegal files!
+2023-03-14 21:52:55,842 :INFO : test_sign_up_matching_data :Sign up matching data test passed successfully!
+2023-03-14 21:52:56,117 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-14 21:52:56,354 :INFO : test_add_same_site :Add same site to database test passed successfully: can't add the same site in firefox browser!
+2023-03-14 21:52:56,382 :INFO : test_fetch_app_content :Max content test passed successfully : can't accept more content than the defined length!
+2023-03-14 21:53:00,321 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in chrome --> the title is as required!
+2023-03-14 21:53:02,750 :INFO : test_diplayed_picture :Displayed picture test in chrome passed successfully!!
+2023-03-14 21:53:03,463 :INFO : test_picture2_is_displayed :Displayed picture test in chrome passed successfully!!
+2023-03-14 21:53:04,811 :INFO : test_links_of_main_page :Link is working as required in chrome: Passed successfully!
+2023-03-14 21:53:07,188 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in edge --> the title is as required!
+2023-03-14 21:53:10,028 :INFO : test_diplayed_picture :Displayed picture test in edge passed successfully!!
+2023-03-14 21:53:10,998 :INFO : test_picture2_is_displayed :Displayed picture test in edge passed successfully!!
+2023-03-14 21:53:12,679 :INFO : test_links_of_main_page :Link is working as required in edge: Passed successfully!
+2023-03-14 21:53:19,327 :INFO : test_checkTitle :Check title test (smoke test) passed successfully in firefox --> the title is as required!
+2023-03-14 21:53:23,624 :INFO : test_diplayed_picture :Displayed picture test in firefox passed successfully!!
+2023-03-14 21:53:24,729 :INFO : test_picture2_is_displayed :Displayed picture test in firefox passed successfully!!
+2023-03-14 21:53:26,027 :INFO : test_response_of_site :The site can get all size in firefox
+2023-03-14 21:53:26,567 :INFO : test_links_of_main_page :Link is working as required in firefox: Passed successfully!
